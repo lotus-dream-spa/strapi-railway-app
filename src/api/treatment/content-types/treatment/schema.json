@@ -1,0 +1,40 @@
+{
+  "kind": "collectionType",
+  "collectionName": "treatments",
+  "info": {
+    "singularName": "treatment",
+    "pluralName": "treatments",
+    "displayName": "treatment"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "category": {
+      "type": "enumeration",
+      "enum": [
+        "Massage",
+        "Bodycare and Beauty"
+      ]
+    },
+    "description": {
+      "type": "text"
+    },
+    "khTitle": {
+      "type": "string"
+    },
+    "khDescription": {
+      "type": "text"
+    },
+    "packages": {
+      "type": "dynamiczone",
+      "components": [
+        "functional-components.package"
+      ]
+    }
+  }
+}

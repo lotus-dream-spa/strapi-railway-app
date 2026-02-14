@@ -1,0 +1,27 @@
+{
+  "kind": "singleType",
+  "collectionName": "settings",
+  "info": {
+    "singularName": "setting",
+    "pluralName": "settings",
+    "displayName": "setting"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "bookingNoticeMinutes": {
+      "type": "integer"
+    },
+    "contemporanyTreatments": {
+      "type": "integer"
+    },
+    "haveSpecialMessage": {
+      "type": "boolean"
+    },
+    "specialMessage": {
+      "type": "text"
+    }
+  }
+}

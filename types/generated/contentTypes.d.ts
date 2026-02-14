@@ -577,11 +577,13 @@ export interface ApiSettingSetting extends Struct.SingleTypeSchema {
   };
   attributes: {
     bookingNoticeMinutes: Schema.Attribute.Integer;
+    bookingSuspensionReason: Schema.Attribute.Text;
     contemporanyTreatments: Schema.Attribute.Integer;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     haveSpecialMessage: Schema.Attribute.Boolean;
+    isBookingSuspended: Schema.Attribute.Boolean;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',

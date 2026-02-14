@@ -22,6 +22,12 @@
     },
     "specialMessage": {
       "type": "text"
+    },
+    "isBookingSuspended": {
+      "type": "boolean"
+    },
+    "bookingSuspensionReason": {
+      "type": "text"
     }
   }
 }

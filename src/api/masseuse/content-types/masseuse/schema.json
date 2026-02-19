@@ -19,6 +19,22 @@
       "relation": "oneToMany",
       "target": "api::booking.booking",
       "mappedBy": "masseuse"
+    },
+    "img": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "description": {
+      "type": "text"
+    },
+    "khDescription": {
+      "type": "text"
     }
   }
 }

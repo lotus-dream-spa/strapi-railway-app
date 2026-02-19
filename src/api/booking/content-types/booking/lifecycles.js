@@ -97,9 +97,9 @@ const sendBookingEmail = async (bookingId, statusType) => {
       // --- INVIO MAIL ---
       await strapi.plugins['email'].services.email.send({
         to: entry.customer.email,
-        from: 'lotusdreamspa.sr@gmail.com', 
-        replyTo: 'lotusdreamspa.sr@gmail.com',
-        bcc: 'lotusdreamspa.sr@gmail.com', 
+    from: 'lotus.dream.cambodia@gmail.com', 
+  replyTo: 'lotus.dream.cambodia@gmail.com',
+  bcc: 'lotus.dream.cambodia@gmail.com',
         
         subject: emailConfig.subject,
         text: emailConfig.text,

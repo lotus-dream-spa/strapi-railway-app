@@ -30,7 +30,10 @@ module.exports = ({ env }) => ({
       providerOptions: {
         host: env('EMAIL_SMTP_HOST', 'smtp.gmail.com'),
         port: env.int('EMAIL_SMTP_PORT', 587), // Usiamo 587 per evitare QDISC_DROP
-        secure: false, // TLS
+       tls: {
+        rejectUnauthorized: false,
+        minVersion: 'TLSv1.2'
+      },// TLS
         auth: {
           user: env('EMAIL_SMTP_USER'),
           pass: env('EMAIL_SMTP_PASS'),

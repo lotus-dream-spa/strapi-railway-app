@@ -1,0 +1,39 @@
+{
+  "collectionName": "components_text_components_paragraphs",
+  "info": {
+    "displayName": "Paragraph",
+    "icon": "bulletList"
+  },
+  "options": {},
+  "attributes": {
+    "text": {
+      "type": "richtext"
+    },
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "imagePosition": {
+      "type": "enumeration",
+      "enum": [
+        "left",
+        "right",
+        "up",
+        "down"
+      ]
+    },
+    "isImportant": {
+      "type": "boolean"
+    },
+    "paragraphClasses": {
+      "type": "string"
+    }
+  },
+  "config": {}
+}

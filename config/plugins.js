@@ -24,25 +24,23 @@ module.exports = ({ env }) => ({
       },
     },
   },
-  email: {
-    config: {
-      provider: env('EMAIL_PROVIDER', 'nodemailer'),
-      providerOptions: {
-        host: env('EMAIL_SMTP_HOST', 'smtp.gmail.com'),
-        port: env.int('EMAIL_SMTP_PORT', 587), // Usiamo 587 per evitare QDISC_DROP
-       tls: {
-        rejectUnauthorized: false,
-        minVersion: 'TLSv1.2'
-      },// TLS
-        auth: {
-          user: env('EMAIL_SMTP_USER'),
-          pass: env('EMAIL_SMTP_PASS'),
-        },
-      },
-      settings: {
-        defaultFrom: env('EMAIL_SMTP_USER'),
-        defaultReplyTo: env('EMAIL_SMTP_USER'),
+email: {
+  config: {
+    provider: 'nodemailer',
+    providerOptions: {
+      service: 'gmail',
+      auth: {
+        type: 'OAuth2',
+        user: 'lotus.dream.cambodia@gmail.com',
+        clientId: env('GOOGLE_CLIENT_ID'),
+        clientSecret: env('GOOGLE_CLIENT_SECRET'),
+        refreshToken: env('GOOGLE_REFRESH_TOKEN'),
       },
     },
+    settings: {
+      defaultFrom: 'lotus.dream.cambodia@gmail.com',
+      defaultReplyTo: 'lotus.dream.cambodia@gmail.com',
+    },
   },
+},
 });

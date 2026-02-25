@@ -1,0 +1,43 @@
+{
+  "collectionName": "components_graphic_component_heroes",
+  "info": {
+    "displayName": "Hero",
+    "icon": "brush"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "subtitle": {
+      "type": "text"
+    },
+    "textPositioning": {
+      "type": "enumeration",
+      "enum": [
+        "central",
+        "bottom"
+      ]
+    },
+    "bgImage": {
+      "type": "media",
+      "multiple": true,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "overlayClasses": {
+      "type": "string"
+    },
+    "textClasses": {
+      "type": "string"
+    },
+    "heroClasses": {
+      "type": "string"
+    }
+  },
+  "config": {}
+}

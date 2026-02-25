@@ -19,6 +19,8 @@
     "@strapi/provider-email-nodemailer": "^5.36.0",
     "@strapi/provider-upload-local": "5.23.1",
     "@strapi/strapi": "^5.36.0",
+    "googleapis": "^171.4.0",
+    "nodemailer": "^8.0.1",
     "pg": "8.8.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",

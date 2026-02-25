@@ -1,0 +1,26 @@
+{
+  "collectionName": "components_text_components_quotes",
+  "info": {
+    "displayName": "Quote",
+    "icon": "discuss"
+  },
+  "options": {},
+  "attributes": {
+    "text": {
+      "type": "text"
+    },
+    "author": {
+      "type": "string"
+    },
+    "authorDescription": {
+      "type": "string"
+    },
+    "authorDates": {
+      "type": "string"
+    },
+    "quoteClasses": {
+      "type": "string"
+    }
+  },
+  "config": {}
+}

@@ -1,0 +1,44 @@
+{
+  "collectionName": "components_functional_components_ctas",
+  "info": {
+    "displayName": "CTA",
+    "icon": "exit"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "caption": {
+      "type": "string"
+    },
+    "bgImage": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "contentPosition": {
+      "type": "enumeration",
+      "enum": [
+        "left",
+        "right",
+        "center"
+      ]
+    },
+    "overlayClasses": {
+      "type": "string"
+    },
+    "textClasses": {
+      "type": "string"
+    },
+    "ctaClasses": {
+      "type": "string"
+    }
+  },
+  "config": {}
+}

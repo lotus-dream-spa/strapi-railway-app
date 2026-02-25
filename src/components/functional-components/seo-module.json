@@ -1,0 +1,42 @@
+{
+  "collectionName": "components_functional_components_seo_modules",
+  "info": {
+    "displayName": "SeoModule",
+    "icon": "search"
+  },
+  "options": {},
+  "attributes": {
+    "metaTitle": {
+      "type": "string"
+    },
+    "metaDescription": {
+      "type": "text"
+    },
+    "keywords": {
+      "type": "text"
+    },
+    "ogTitle": {
+      "type": "string"
+    },
+    "ogDescription": {
+      "type": "text"
+    },
+    "ogImage": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "ogType": {
+      "type": "string"
+    },
+    "structuredData": {
+      "type": "text"
+    }
+  },
+  "config": {}
+}

@@ -41,6 +41,12 @@
         "text-components.quote",
         "functional-components.cta"
       ]
+    },
+    "article_tags": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::article-tag.article-tag",
+      "mappedBy": "articles"
     }
   }
 }

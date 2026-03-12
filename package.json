@@ -7,7 +7,7 @@
     "build": "strapi build",
     "console": "strapi console",
     "deploy": "strapi deploy",
-    "dev": "strapi develop",
+    "dev": "strapi develop --debug",
     "develop": "strapi develop",
     "start": "strapi start",
     "strapi": "strapi",

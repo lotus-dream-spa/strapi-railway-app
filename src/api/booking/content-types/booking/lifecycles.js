@@ -21,15 +21,12 @@ const encryptId = (text) => {
   return encrypted.toString("hex");
 };
 
-const sendBookingEmail = async (bookingId, statusType) => {
+const sendBookingEmail = async (documentId, statusType, triggerSource) => {
   try {
-    const entry = await strapi.entityService.findOne(
-      "api::booking.booking",
-      bookingId,
-      {
-        populate: ["customer", "treatment"],
-      },
-    );
+    const entry = await strapi.documents("api::booking.booking").findOne({
+      documentId,
+      populate: ["customer", "treatment"],
+    });
 
     if (entry && entry.customer && entry.customer.email) {
       // --- 1. RILEVAMENTO LINGUA ---
@@ -83,10 +80,10 @@ const sendBookingEmail = async (bookingId, statusType) => {
           titleCanc: "ការកក់ត្រូវបានលុបចោល",
           titleCreated: "ទទួលបានសំណើទាក់ទង",
           msgConf: `យើងកំពុងរង់ចាំអ្នក, ${entry.customer.name ?? "ភ្ញៀវ"}.`,
-          msgCanc: `សួស្តី ${entry.customer.name ?? "ភ្ញៀវ"}, ការណាត់ជួបរបស់អ្នកត្រូវបានលុបចោលតាមសំណើ។`,
-          msgCreated: `សួស្តី ${entry.customer.name ?? "ភ្ញៀវ"}, យើងបានទទួលសំណើទាក់ទងរបស់អ្នកហើយ។`,
-          textConf: `សួស្តី ${entry.customer.name ?? "ភ្ញៀវ"}, ការណាត់ជួបរបស់អ្នកត្រូវបានបញ្ជាក់។`,
-          textCanc: `សួស្តី ${entry.customer.name ?? "ភ្ញៀវ"}, ការណាត់ជួបរបស់អ្នកត្រូវបានលុបចោល។`,
+          msgCanc: `សួស្តី ${entry.customer.name ?? "ភ្ញៀវ"}, ការណាត់ជួបរបស់អ្នកត្រូវបានលុបចោលតាមសំណើ।`,
+          msgCreated: `សួស្តី ${entry.customer.name ?? "ភ្ញៀវ"}, យើងបានទទួលសំណើទាក់ទងរបស់អ្នកហើយ।`,
+          textConf: `សួស្តី ${entry.customer.name ?? "ភ្ញៀវ"}, ការណាត់ជួបរបស់អ្នកត្រូវបានបញ្ជាក់।`,
+          textCanc: `សួស្តី ${entry.customer.name ?? "ភ្ញៀវ"}, ការណាត់ជួបរបស់អ្នកត្រូវបានលុបចោល।`,
           textCreated: `សួស្តី ${entry.customer.name ?? "ភ្ញៀវ"}, យើងបានទទួលសំណើរបស់អ្នក ហើយនឹងទាក់ទងទៅអ្នកវិញក្នុងពេលឆាប់ៗនេះ។`,
           detailsHeader: "ព័ត៌មានលម្អិតនៃការណាត់ជួប",
           requestHeader: "ព័ត៌មានលម្អិតនៃសំណើ",
@@ -103,7 +100,7 @@ const sendBookingEmail = async (bookingId, statusType) => {
           labelCreatedAt: "ម៉ោងស្នើសុំ",
           checkReception: "សាកសួរនៅកន្លែងទទួលភ្ញៀវ",
           mins: "នាទី",
-          footerCanc: '"សូមទាក់ទងមកយើងខ្ញុំគ្រប់ពេលដែលអ្នកត្រូវការ។"',
+          footerCanc: '"សូមទាក់ទងមកយើងខ្ញុំគ្រប់ពេលដែលអ្នកត្រូវការ।"',
           btnDirections: "📍 មើលទីតាំង",
           btnCancel: "បោះបង់ការណាត់ជួប",
           cancelNote:
@@ -225,12 +222,12 @@ const sendBookingEmail = async (bookingId, statusType) => {
       </a>
     </div>
   `;
-      console.log(
-        `Sending ${statusType} email to: ${entry.customer.email} (Language: ${isKhmer ? "Khmer" : "English"})`,
+      strapi.log.info(
+        `[${triggerSource}][${documentId}] Attempting to send ${statusType} email to: ${entry.customer.email} (Language: ${isKhmer ? "Khmer" : "English"})`,
       );
 
       // --- INVIO MAIL ---
-      await strapi.plugins["email"].services.email.send({
+      await strapi.plugin("email").service("email").send({
         to: entry.customer.email,
         from: "lotus.dream.cambodia@gmail.com",
         replyTo: "lotus.dream.cambodia@gmail.com",
@@ -273,38 +270,71 @@ const sendBookingEmail = async (bookingId, statusType) => {
       });
 
       strapi.log.info(
-        `Spa ${statusType} Email sent to ${entry.customer.email}`,
+        `[${triggerSource}][${documentId}] Spa ${statusType} Email successfully sent to ${entry.customer.email}`,
       );
+    } else {
+      strapi.log.warn(`[${triggerSource}][${documentId}] Cannot send email: customer email not found for booking.`);
     }
   } catch (err) {
-    strapi.log.error(`Error sending Spa ${statusType} email:`, err);
+    strapi.log.error(`[${triggerSource}][${documentId}] Critical error while sending Spa ${statusType} email:`, err);
   }
 };
 
 module.exports = {
   async afterCreate(event) {
     const { result, params } = event;
-
-    // Controlliamo lo status nei dati inviati (params.data) o nel risultato
     const status = params.data?.bookingStatus || result.bookingStatus;
 
-    if (status === "confirmed") {
-      console.log("--- afterCreate: sending confirmation email ---");
-      await sendBookingEmail(result.id, "confirmed");
-    } else if (status === "created") {
-      console.log("--- afterCreate: sending contact request email ---");
-      await sendBookingEmail(result.id, "created");
+    // In Strapi 5, publishing a draft triggers afterCreate for the published version.
+    if (result.publishedAt) {
+      // Se è il momento della pubblicazione:
+      if (status === "confirmed") {
+        strapi.log.info(`--- [afterCreate][${result.documentId}] Triggering confirmation email (PUBLISHED) ---`);
+        await sendBookingEmail(result.documentId, "confirmed", "afterCreate");
+      } else if (status === "cancelled") {
+        strapi.log.info(`--- [afterCreate][${result.documentId}] Triggering cancellation email (PUBLISHED) ---`);
+        await sendBookingEmail(result.documentId, "cancelled", "afterCreate");
+      } else if (status === "created") {
+        // Evitiamo il duplicato per 'created': se è appena stato pubblicato, non inviamo di nuovo
+        // perché lo abbiamo già inviato al momento della creazione della bozza (afterCreate DRAFT)
+        strapi.log.info(`--- [afterCreate][${result.documentId}] Contact request email skipped during publish to avoid duplicate ---`);
+      }
+    } else {
+      // Se è una bozza (appena creata):
+      if (status === "created") {
+        strapi.log.info(`--- [afterCreate][${result.documentId}] Triggering contact request email (DRAFT creation) ---`);
+        await sendBookingEmail(result.documentId, "created", "afterCreate");
+      } else {
+        strapi.log.info(`--- [afterCreate][${result.documentId}] Email skipped for status ${status} (DRAFT) ---`);
+      }
     }
   },
 
   async beforeUpdate(event) {
     const { params } = event;
-    // Recuperiamo lo stato PRECEDENTE per confrontarlo dopo
-    const existingEntry = await strapi.entityService.findOne(
-      "api::booking.booking",
-      params.where.id
-    );
-    event.state = existingEntry;
+    try {
+      const documentId = params.where.documentId || params.data?.documentId || params.where.id;
+      if (!documentId) return;
+
+      // Cerchiamo la versione PUBBLICATA attuale per vedere se lo stato sta cambiando rispetto a quello che il cliente sa
+      const existingEntry = await strapi.documents("api::booking.booking").findOne({
+        documentId: documentId,
+        status: 'published',
+      });
+      
+      // Se non esiste una versione pubblicata, prendiamo la bozza come backup per il confronto
+      if (!existingEntry) {
+        const draftEntry = await strapi.documents("api::booking.booking").findOne({
+          documentId: documentId,
+          status: 'draft',
+        });
+        event.state = draftEntry;
+      } else {
+        event.state = existingEntry;
+      }
+    } catch (err) {
+      strapi.log.error("Error in beforeUpdate while fetching existing entry:", err);
+    }
   },
 
   async afterUpdate(event) {
@@ -313,18 +343,28 @@ module.exports = {
     const newStatus = params.data?.bookingStatus;
     const oldStatus = state?.bookingStatus;
 
-    // IMPORTANTE: Mandiamo la mail SOLO se lo stato è CAMBIATO
-    if (newStatus && newStatus !== oldStatus) {
-      if (newStatus === "confirmed") {
-        console.log(`--- afterUpdate: Status changed from ${oldStatus} to ${newStatus}. Sending Email... ---`);
-        await sendBookingEmail(result.id, "confirmed");
-      } else if (newStatus === "cancelled") {
-        console.log(`--- afterUpdate: Status changed to cancelled. Sending Email... ---`);
-        await sendBookingEmail(result.id, "cancelled");
-      } else if (newStatus === "created") {
-        console.log(`--- afterUpdate: Status changed to created. Sending Email... ---`);
-        await sendBookingEmail(result.id, "created");
+    if (newStatus === undefined) return;
+
+    if (newStatus === oldStatus) {
+      // Usiamo debug o info a seconda di quanto vogliamo essere logorroici
+      strapi.log.debug(`[afterUpdate][${result.documentId}] Status unchanged (${newStatus}), skipping email.`);
+      return;
+    }
+
+    strapi.log.info(`--- [afterUpdate][${result.documentId}] Status changed from ${oldStatus} to ${newStatus}. Triggering Email... ---`);
+    
+    // Per Confirmed e Cancelled, inviamo solo se il record è pubblicato (o sta venendo pubblicato ora)
+    if (newStatus === "confirmed" || newStatus === "cancelled") {
+      if (result.publishedAt) {
+        await sendBookingEmail(result.documentId, newStatus, "afterUpdate");
+      } else {
+        strapi.log.info(`--- [afterUpdate][${result.documentId}] ${newStatus} email skipped (Record is DRAFT) ---`);
       }
+    } else if (newStatus === "created") {
+      await sendBookingEmail(result.documentId, "created", "afterUpdate");
     }
   },
 };
+
+
+

@@ -38,6 +38,15 @@
     },
     "ctaClasses": {
       "type": "string"
+    },
+    "buttonLabel": {
+      "type": "string"
+    },
+    "buttonLink": {
+      "type": "string"
+    },
+    "isExternal": {
+      "type": "boolean"
     }
   },
   "config": {}

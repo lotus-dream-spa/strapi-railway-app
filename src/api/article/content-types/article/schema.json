@@ -17,6 +17,9 @@
     "caption": {
       "type": "string"
     },
+    "slug": {
+      "type": "string"
+    },
     "thumbnail": {
       "type": "media",
       "multiple": false,

@@ -8,9 +8,12 @@ export interface FunctionalComponentsCta extends Struct.ComponentSchema {
   };
   attributes: {
     bgImage: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    buttonLabel: Schema.Attribute.String;
+    buttonLink: Schema.Attribute.String;
     caption: Schema.Attribute.String;
     contentPosition: Schema.Attribute.Enumeration<['left', 'right', 'center']>;
     ctaClasses: Schema.Attribute.String;
+    isExternal: Schema.Attribute.Boolean;
     overlayClasses: Schema.Attribute.String;
     textClasses: Schema.Attribute.String;
     title: Schema.Attribute.String;

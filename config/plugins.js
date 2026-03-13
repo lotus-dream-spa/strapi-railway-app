@@ -28,7 +28,9 @@ email: {
   config: {
     provider: 'nodemailer',
     providerOptions: {
-      service: 'gmail',
+      host: 'smtp.gmail.com',
+      port: 587,
+      secure: false, // Port 587 uses STARTTLS
       auth: {
         type: 'OAuth2',
         user: 'lotus.dream.cambodia@gmail.com',
@@ -36,6 +38,9 @@ email: {
         clientSecret: env('GOOGLE_CLIENT_SECRET'),
         refreshToken: env('GOOGLE_REFRESH_TOKEN'),
       },
+      tls: {
+        rejectUnauthorized: true
+      }
     },
     settings: {
       defaultFrom: 'lotus.dream.cambodia@gmail.com',
